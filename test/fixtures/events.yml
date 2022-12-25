@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  image_url: MyString
+  description: MyText
+  location: MyString
+  start_date: 2022-12-25
+  end_date: 2022-12-25
+  start_time: MyString
+  end_time: MyString
+  total_tickets: 1
+  remaining_tickets: 1
+  amoun: 1
+
+two:
+  name: MyString
+  image_url: MyString
+  description: MyText
+  location: MyString
+  start_date: 2022-12-25
+  end_date: 2022-12-25
+  start_time: MyString
+  end_time: MyString
+  total_tickets: 1
+  remaining_tickets: 1
+  amoun: 1
