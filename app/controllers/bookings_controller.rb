@@ -1,12 +1,20 @@
 class BookingsController < ApplicationController
+
+    load_and_authorize_resource 
+
     before_action :authenticate_user!
     before_action :set_booking, only: [:show, :update, :destroy]
 
 rescue_from ActiveRecord::RecordInvalid, with: :valid_booking
 
+rescue_from CanCan::AccessDenied do |exception|
+    render json: {warning: exception, status: "authorization_failed"}
+end
+
     def index
-        @bookings = current_user.bookings
-        render json: @bookings
+        @bookings = Booking.all
+        # @bookings = current_user.bookings
+        render json: @bookings, status: :ok
     end
 
     def show
@@ -28,7 +36,7 @@ rescue_from ActiveRecord::RecordInvalid, with: :valid_booking
           render json: {}
         else
             render json: {error: "Something went wrong"}
-        end
+        end 
     end
 
     private 
