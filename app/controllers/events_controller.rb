@@ -1,9 +1,10 @@
 class EventsController < ApplicationController
-    
-    before_action :authenticate_user!
-    before_action :set_booking, only: [:show, :update, :destroy]
 
-    rescue_from ActiveRecord::RecordInvalid, with: :valid_booking
+    load_and_authorize_resource  
+    before_action :authenticate_user!
+    before_action :set_event, only: [:show, :update, :destroy]
+
+    rescue_from ActiveRecord::RecordInvalid, with: :valid_event
 
 rescue_from CanCan::AccessDenied do |exception|
     render json: {warning: exception, status: "authorization_failed"}
@@ -12,25 +13,25 @@ end
     def index
         @events = Event.all
         # @bookings = current_user.bookings
-        render json: @bookings, status: :ok
+        render json: @events, status: :ok
     end
 
     def show
-        render json: @booking, status: :ok
+        render json: @event, status: :ok
     end
 
     def create
-        @booking = current_user.bookings.create!(booking_params)
-        render json: @booking, status: :created
+        @event = Event.create!(event_params)
+        render json: @event, status: :created
     end
 
     def update
-        @booking.update!(booking_params)
-        render json: @booking, status: :ok
+        @event.update!(event_params)
+        render json: @event, status: :ok
     end
 
     def destroy
-        if @booking.destroy
+        if @event.destroy
           render json: {}
         else
             render json: {error: "Something went wrong"}
@@ -40,16 +41,17 @@ end
     private 
 
     def set_event
-        @event = current_user.event.find(params[:id])
+        @event = Event.find(params[:id])
     rescue ActiveRecord::RecordNotFound => error
         render json: error.message, status: :unauthorized
     end
 
-    def booking_params
-        params.permit(:no_of_tickets, :amount_paid, :user_id, :event_id)
+    def event_params
+        params.permit(:name, :image_url, :description, :location, :start_date,
+        :end_date, :start_time, :end_time, :total_tickets, :remaining_tickets, :amount)
     end
 
-    def valid_booking(valid)
+    def valid_event(valid)
         render json:{errors: valid.record.errors.full_messages}, status: :unprocessable_entity
     end
 
